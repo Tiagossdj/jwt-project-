@@ -2,14 +2,14 @@
 Projeto de Microserviço de Autenticação com JWT 
 
   //ROTAS
-POST /register
-POST /login
-GET /profile
+- POST /register
+- POST /login
+- GET /profile
 
   //BANCO DE DADOS
-Email - (unico)
-Id  - (auto-incremento)
-Password - (bcrypt)
+- Email - (unico)
+- Id  - (auto-incremento)
+- Password - (bcrypt)
 
   //SEGURANÇA
  - Usar chaves secretas fortes para gerar tokens JWT.
