@@ -1,12 +1,12 @@
 # jwt-project-
 Projeto de Microserviço de Autenticação com JWT 
 
-  //ROTAS
+//ROTAS
 - POST /register
 - POST /login
 - GET /profile
 
-  //BANCO DE DADOS
+//BANCO DE DADOS
 - Email - (unico)
 - Id  - (auto-incremento)
 - Password - (bcrypt)
