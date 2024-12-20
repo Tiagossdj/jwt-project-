@@ -1,5 +1,5 @@
 # jwt-project-
-Projeto de Microserviço de Aunteticação com JWT 
+Projeto de Microserviço de Autenticação com JWT 
 
   //ROTAS
 POST /register
