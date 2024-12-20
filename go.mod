@@ -2,7 +2,10 @@ module github.com/labstack/echo/v4
 
 go 1.22.6
 
-require github.com/labstack/echo v3.3.10+incompatible
+require (
+	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/labstack/echo v3.3.10+incompatible
+)
 
 require (
 	github.com/labstack/gommon v0.4.2 // indirect
