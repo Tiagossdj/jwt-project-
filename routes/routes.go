@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"log"
+
 	"github.com/Tiagossdj/jwt-project-/db"
 	"github.com/Tiagossdj/jwt-project-/handlers"
 	"github.com/labstack/echo"
@@ -15,9 +17,16 @@ func InitRoutes(e *echo.Echo) {
 	//Rotas para Autenticação
 	authGroup := e.Group("/auth")
 
-	authGroup.POST("/login", handlers.Login)
+	dbConn, err := db.ConnDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+		return
+	}
 
-	dbConn, _ := db.ConnDB()
+	authGroup.POST("/login", func(c echo.Context) error {
+		return handlers.Login(c, dbConn)
+	})
+
 	authGroup.POST("/register", func(c echo.Context) error {
 		return handlers.Register(c, dbConn)
 	})
