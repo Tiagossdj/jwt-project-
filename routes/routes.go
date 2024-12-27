@@ -1,8 +1,9 @@
 package routes
 
 import (
+	"github.com/Tiagossdj/jwt-project-/db"
+	"github.com/Tiagossdj/jwt-project-/handlers"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/v4/handlers"
 )
 
 func InitRoutes(e *echo.Echo) {
@@ -13,8 +14,13 @@ func InitRoutes(e *echo.Echo) {
 
 	//Rotas para Autenticação
 	authGroup := e.Group("/auth")
+
 	authGroup.POST("/login", handlers.Login)
-	authGroup.POST("/register", handlers.Register)
+
+	dbConn, _ := db.ConnDB()
+	authGroup.POST("/auth/register", func(c echo.Context) error {
+		return handlers.Register(c, dbConn)
+	})
 
 }
 
