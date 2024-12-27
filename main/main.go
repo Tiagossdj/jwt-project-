@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Tiagossdj/jwt-project-/model"
+	"github.com/Tiagossdj/jwt-project-/db"
 	"github.com/Tiagossdj/jwt-project-/routes"
 	"github.com/labstack/echo"
 )
@@ -14,21 +14,14 @@ func main() {
 
 	e := echo.New()
 
-	//Routes
+	//DB
+	conn, err := db.ConnDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer conn.Close()
 
-	//login
-	//e.POST("/")
-
-	//register
-	//e.POST("/")
-
-	//profile
-	e.GET("/", func(c echo.Context) error {
-		return c.JSON(200, model.Message{
-			Message: "Hi",
-		})
-	})
-
+	//Rotas
 	routes.InitRoutes(e)
 
 	//Server
