@@ -49,8 +49,22 @@ func Login(c echo.Context) error {
 
 // Register é o handler para o endPoint /auth/register
 func Register(c echo.Context) error {
-	return c.JSON(http.StatusCreated, map[string]string{
-		"Message": "Registro realizado com sucesso!",
-	})
+	var req model.RegisterRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, model.Message{
+			Message: "Invalid Data",
+		})
+	}
 
+	if req.Name == "" || req.Email == "" || req.Password == "" {
+		return c.JSON(http.StatusBadRequest, model.Message{
+			Message: "You need to fill in all the fields!",
+		})
+	}
+
+	//salvar o usuário em um banco de dados
+
+	return c.JSON(http.StatusCreated, model.Message{
+		Message: "User registered successfully!",
+	})
 }
