@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"database/sql"
+	"log"
 	"net/http"
 	"time"
 
@@ -54,10 +54,14 @@ func Login(c echo.Context) error {
 func Register(c echo.Context, db *sqlx.DB) error {
 	var req model.RegisterRequest
 	if err := c.Bind(&req); err != nil {
+		// log para saber que Erro aconteceu.
+		log.Printf("Error to bind data: %+v", err)
 		return c.JSON(http.StatusBadRequest, model.Message{
 			Message: "Invalid Data",
 		})
 	}
+	// log para Dados recebidos na requisição.
+	log.Printf("data received: %+v", req)
 
 	if req.Name == "" || req.Email == "" || req.Password == "" {
 		return c.JSON(http.StatusBadRequest, model.Message{
@@ -65,17 +69,17 @@ func Register(c echo.Context, db *sqlx.DB) error {
 		})
 	}
 
-	var existingUser model.User
-	err := db.Get(&existingUser, "SELECT * FROM usuario WHERE email = $1", req.Email)
+	var userWithEmail model.User
+	err := db.Get(&userWithEmail, "SELECT * FROM usuario WHERE email = $1", req.Email)
 	if err == nil {
 		return c.JSON(http.StatusConflict, model.Message{
 			Message: "Email already registered",
 		})
-	} else if err != sql.ErrNoRows {
+	} else {
+		log.Printf("Error verifying email: %v", err) // Log detalhado
 		return c.JSON(http.StatusInternalServerError, model.Message{
 			Message: "Error verifying Email.",
 		})
-
 	}
 
 	// HASH da senha
@@ -88,7 +92,7 @@ func Register(c echo.Context, db *sqlx.DB) error {
 
 	// insere o novo usuario no banco de dados com a senha hash
 	_, err = db.DB.Exec(
-		"INSERT INTO usuario (nome, email, password, created_at) VALUES ($1, $2, $3, $4)", req.Name, req.Email, string(hashPassword), req.Created_at,
+		"INSERT INTO usuario (nome, email, password) VALUES ($1, $2, $3)", req.Name, req.Email, string(hashPassword),
 	)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, model.Message{
