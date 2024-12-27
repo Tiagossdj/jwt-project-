@@ -18,7 +18,7 @@ func InitRoutes(e *echo.Echo) {
 	authGroup.POST("/login", handlers.Login)
 
 	dbConn, _ := db.ConnDB()
-	authGroup.POST("/auth/register", func(c echo.Context) error {
+	authGroup.POST("/register", func(c echo.Context) error {
 		return handlers.Register(c, dbConn)
 	})
 
