@@ -1,4 +1,4 @@
-module github.com/labstack/echo/v4
+module github.com/Tiagossdj/jwt-project-
 
 go 1.22.6
 
@@ -8,7 +8,9 @@ require (
 )
 
 require (
+	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
+	github.com/lib/pq v1.10.9
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
