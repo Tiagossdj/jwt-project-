@@ -15,7 +15,7 @@ import (
 )
 
 // chave secreta para assinar o token jwt
-var jwtSecret = []byte("your secret key!")
+var JwtSecret = []byte("yoursecretkey!")
 
 // Login é o handler para o endPoint /auth/login
 func Login(c echo.Context, db *sqlx.DB) error {
@@ -26,7 +26,6 @@ func Login(c echo.Context, db *sqlx.DB) error {
 		})
 	}
 
-	// validação básica para substituir com a lógica real de autenticação depois
 	if req.Email == "" || req.Password == "" {
 		return c.JSON(http.StatusUnauthorized, model.Message{
 			Message: "invalid credentials!",
@@ -55,13 +54,13 @@ func Login(c echo.Context, db *sqlx.DB) error {
 	}
 
 	// geração de token JWT
-	claims := &jwt.RegisteredClaims{
-		Subject:   req.Email,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)), // 24h de duração.
+	claims := jwt.MapClaims{
+		"sub": req.Email,                             // O 'sub' normalmente é o identificador do usuário (aqui estamos usando o email)
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // A data de expiração
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(jwtSecret)
+	signedToken, err := token.SignedString(JwtSecret)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, model.Message{
 			Message: "Error to generate Token!",
@@ -72,6 +71,7 @@ func Login(c echo.Context, db *sqlx.DB) error {
 	return c.JSON(http.StatusOK, model.Message{
 		Message: fmt.Sprintf("Hi %s, here's your token: %s", user.Name, signedToken),
 	})
+
 }
 
 // Register é o handler para o endPoint /auth/register
@@ -127,4 +127,35 @@ func Register(c echo.Context, db *sqlx.DB) error {
 		Message: "successfully registered user",
 	})
 
+}
+
+// Profile é o handler para o endPoint /protected/profile, para utiliza-lo, é necessario um token!
+func GetProfile(c echo.Context) error {
+	user := c.Get("user") // Obtendo o usuário do contexto
+	if user == nil {
+		return c.JSON(http.StatusUnauthorized, model.Message{
+			Message: "Invalid Token claims", // Se o usuário não estiver no contexto, retorna erro
+		})
+	}
+
+	// Verificando se as claims são do tipo jwt.MapClaims
+	claims, ok := user.(jwt.MapClaims)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, model.Message{
+			Message: "Invalid Token claims", // Se não for jwt.MapClaims, retorna erro
+		})
+	}
+
+	// Acessando o valor das claims
+	email, ok := claims["sub"].(string) // "sub" é o email do usuário
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, model.Message{
+			Message: "Invalid Token claims: Missing 'sub' claim", // Verificando se 'sub' existe
+		})
+	}
+
+	// Retornar a resposta com o email extraído do token
+	return c.JSON(http.StatusOK, model.Message{
+		Message: fmt.Sprintf("User profile for: %s", email),
+	})
 }
