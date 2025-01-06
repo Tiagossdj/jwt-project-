@@ -5,6 +5,7 @@ import (
 
 	"github.com/Tiagossdj/jwt-project-/db"
 	"github.com/Tiagossdj/jwt-project-/handlers"
+	"github.com/Tiagossdj/jwt-project-/middlewares"
 	"github.com/labstack/echo"
 )
 
@@ -16,6 +17,10 @@ func InitRoutes(e *echo.Echo) {
 
 	//Rotas para Autenticação
 	authGroup := e.Group("/auth")
+
+	// Grupo de rotas protegidas (para proteger com JWT)
+	protectedGroup := e.Group("/protected")
+	protectedGroup.Use(middlewares.JwtMiddleware)
 
 	dbConn, err := db.ConnDB()
 	if err != nil {
@@ -31,9 +36,8 @@ func InitRoutes(e *echo.Echo) {
 		return handlers.Register(c, dbConn)
 	})
 
-}
+	protectedGroup.GET("/profile", func(c echo.Context) error {
+		return handlers.GetProfile(c)
+	})
 
-// Grupo de rotas protegidas (exemplo para proteger com JWT futuramente)
-// protectedGroup := e.Group("/protected")
-// protectedGroup.Use(middleware.JWT([]byte("secret")))
-// protectedGroup.GET("/dashboard", handlers.Dashboard)
+}

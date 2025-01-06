@@ -17,10 +17,9 @@ type LoginRequest struct {
 
 // estrutura para o registro
 type RegisterRequest struct {
-	Name       string    `json:"nome"`
-	Email      string    `json:"email"`
-	Password   string    `json:"password"`
-	Created_at time.Time `json:"created_at"`
+	Name     string `json:"nome"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 // Estrutura para o Banco de Dados
