@@ -55,8 +55,9 @@ func Login(c echo.Context, db *sqlx.DB) error {
 
 	// geração de token JWT
 	claims := jwt.MapClaims{
-		"sub": req.Email,                             // O 'sub' normalmente é o identificador do usuário (aqui estamos usando o email)
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // A data de expiração
+		"name": user.Name,                             // o nome do usuario logado!
+		"sub":  req.Email,                             // O 'sub' normalmente é o identificador do usuário (aqui estamos usando o email)
+		"exp":  time.Now().Add(time.Hour * 24).Unix(), // A data de expiração
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -146,16 +147,14 @@ func GetProfile(c echo.Context) error {
 		})
 	}
 
-	// Acessando o valor das claims
-	email, ok := claims["sub"].(string) // "sub" é o email do usuário
+	name, ok := claims["name"].(string) // "name" é o nome do usuario registrado.
 	if !ok {
-		return c.JSON(http.StatusUnauthorized, model.Message{
-			Message: "Invalid Token claims: Missing 'sub' claim", // Verificando se 'sub' existe
-		})
+		name = "Usuário"
 	}
 
 	// Retornar a resposta com o email extraído do token
 	return c.JSON(http.StatusOK, model.Message{
-		Message: fmt.Sprintf("User profile for: %s", email),
+		Message: fmt.Sprintf("Token validado com sucesso! Bem vindo %s!", name),
 	})
+
 }
