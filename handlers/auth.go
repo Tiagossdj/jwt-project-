@@ -56,7 +56,6 @@ func Login(c echo.Context, db *sqlx.DB) error {
 	// geração de token JWT
 	claims := jwt.MapClaims{
 		"name": user.Name,                             // o nome do usuario logado!
-		"sub":  req.Email,                             // O 'sub' normalmente é o identificador do usuário (aqui estamos usando o email)
 		"exp":  time.Now().Add(time.Hour * 24).Unix(), // A data de expiração
 	}
 
