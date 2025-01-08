@@ -31,7 +31,7 @@ func JwtMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Remove o prefixo "Bearer" e pega o token
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		log.Printf("Validating Token: %s", tokenString) // Log para depuração
+		// log.Printf("Validating Token: %s", tokenString) // Log para depuração!
 
 		// Parse do token com claims
 		claims := jwt.MapClaims{}
