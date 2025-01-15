@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
@@ -165,4 +166,68 @@ func TestRegister_EmailExists(t *testing.T) {
 	}
 
 	assert.NoError(t, mock.ExpectationsWereMet()) // Verifica se todas as expectativas de mock foram atendidas
+}
+
+// Teste de GetProfile com Token Válido!
+
+func TestGetProfile_Success(t *testing.T) {
+	e := echo.New()
+
+	// Criando um tokenJWT de Exemplo (simulação)
+	token := "yoursecretkey!"
+
+	req := httptest.NewRequest(http.MethodGet, "/protected/profile", nil)
+	req.Header.Set(echo.HeaderAuthorization, "Bearer "+token)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	//Simulando a inserção do usuario no contexto
+
+	claims := jwt.MapClaims{
+		"name": "test user",
+	}
+	c.Set("user", claims)
+
+	// Executando o handler!
+	if assert.NoError(t, GetProfile(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Token validado com sucesso! Bem vindo test user")
+	}
+}
+
+// Teste de GetProfile com Token Inválido ou ausente!
+
+func TestGetProfile_InvalidToken(t *testing.T) {
+	e := echo.New()
+
+	req := httptest.NewRequest(http.MethodGet, "/protected/profile", nil)
+	req.Header.Set(echo.HeaderAuthorization, "Bearer invalid_token")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	// Executando o handler!
+	if assert.NoError(t, GetProfile(c)) {
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Invalid Token claims")
+	}
+}
+
+// Teste de GetProfile com Claims Inválidas!
+
+func TestGetProfile_InvalidTokenClaimsType(t *testing.T) {
+	e := echo.New()
+
+	req := httptest.NewRequest(http.MethodGet, "/protected/profile", nil)
+	req.Header.Set(echo.HeaderAuthorization, "Bearer valid_token_here")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	//simula claims com o tipo errado (não é  Jwt_MapClaims)!!!
+	c.Set("user", "invalid_claims_type") //tipo inválido no contexto!
+
+	// Executando o handler!
+	if assert.NoError(t, GetProfile(c)) {
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Invalid Token claims")
+	}
 }
