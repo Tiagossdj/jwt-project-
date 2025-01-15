@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/golang-jwt/jwt/v4"
@@ -168,13 +170,35 @@ func TestRegister_EmailExists(t *testing.T) {
 	assert.NoError(t, mock.ExpectationsWereMet()) // Verifica se todas as expectativas de mock foram atendidas
 }
 
+// Função para gerar token válidos para teste!
+
+func GenerateValidToken() string {
+	//claims do token
+	claims := jwt.MapClaims{
+		"name": "Test User",                            // O nome que você quiser!
+		"exp":  time.Now().Add(time.Minute * 1).Unix(), //tempo de expiração do token.
+	}
+
+	// Criando o token com a chave secreta
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// A chave secreta que você usaria para assinar o token (o mesmo valor usado na aplicação)!
+	secretKey := []byte("yoursecretkey!")
+
+	//gerando o token
+	tokenString, err := token.SignedString(secretKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tokenString
+}
+
 // Teste de GetProfile com Token Válido!
 
 func TestGetProfile_Success(t *testing.T) {
 	e := echo.New()
 
 	// Criando um tokenJWT de Exemplo (simulação)
-	token := "yoursecretkey!" // Você pode gerar um token válido aqui se for necessário.
+	token := GenerateValidToken()
 
 	req := httptest.NewRequest(http.MethodGet, "/protected/profile", nil)
 	req.Header.Set(echo.HeaderAuthorization, "Bearer "+token)
