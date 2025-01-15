@@ -174,7 +174,7 @@ func TestGetProfile_Success(t *testing.T) {
 	e := echo.New()
 
 	// Criando um tokenJWT de Exemplo (simulação)
-	token := "yoursecretkey!"
+	token := "yoursecretkey!" // Você pode gerar um token válido aqui se for necessário.
 
 	req := httptest.NewRequest(http.MethodGet, "/protected/profile", nil)
 	req.Header.Set(echo.HeaderAuthorization, "Bearer "+token)
