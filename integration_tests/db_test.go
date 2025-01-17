@@ -88,7 +88,7 @@ func CreateUserTest(db *sqlx.DB) {
 		log.Fatalf("Failed to hash password:%v", err)
 	}
 
-	_, err = db.Exec(`insert into usuario (nome, email, password) values ('Test user', 'TestUser@example.com', '$1')`, hashedPassword)
+	_, err = db.Exec(`insert into usuario (nome, email, password) values ('Test user', 'TestUser@example.com', $1)`, hashedPassword)
 
 	if err != nil {
 		log.Fatalf("Failed to Populate Database:%v", err)
