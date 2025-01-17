@@ -16,9 +16,6 @@ func TestRegister_Integration(t *testing.T) {
 	db := SetupTestDataBase(t)
 	defer CleanUpTestDataBase(db)
 
-	// Cria dados necessários para teste
-	PopulateTestData(db)
-
 	// Configura o echo e cria o contexto para o teste
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/auth/register", strings.NewReader(`{"nome":"Test User", "email":"test@example.com", "password":"123456"}`))
@@ -39,4 +36,25 @@ func TestRegister_Integration(t *testing.T) {
 		t.Fatalf("Error to Verify test Database:%v", err)
 	}
 	assert.Equal(t, 1, count)
+}
+
+func TestRegister_EmailAlreadyExists(t *testing.T) { // Configura o banco de dados de testes
+	db := SetupTestDataBase(t)
+	defer CleanUpTestDataBase(db)
+
+	// Cria dados necessários para teste
+	PopulateTestData(db)
+
+	// Configura o echo e cria o contexto para o teste
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/auth/register", strings.NewReader(`{"nome":"Test User", "email":"test@example.com", "password":"123456"}`))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	// Executa o handler Register
+	if assert.NoError(t, handlers.Register(c, db)) {
+		assert.Equal(t, http.StatusConflict, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Email already registered")
+	}
 }
