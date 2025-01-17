@@ -17,7 +17,6 @@ func SetupTestDataBase(t *testing.T) *sqlx.DB {
 	if err != nil {
 		t.Fatalf("Failed to connect test Database:%v", err)
 	}
-	defer db.Close()
 
 	_, err = db.Exec("DROP DATABASE IF EXISTS jwtdb_test")
 	if err != nil {
@@ -57,7 +56,9 @@ func createTables(db *sqlx.DB) {
 
 // func para limpeza do banco de dados após os testes
 func CleanUpTestDataBase(db *sqlx.DB) {
+	// Fecha a conexão com o banco de dados de teste
 	db.Close()
+
 	//conectar ao banco de dados principal para excluir o banco de testes
 	conn, err := sqlx.Open("postgres", "user=postgres password=1234 sslmode=disable")
 	if err != nil {
@@ -65,7 +66,8 @@ func CleanUpTestDataBase(db *sqlx.DB) {
 	}
 	defer conn.Close()
 
-	_, err = conn.Exec("drop database jwtdb_test")
+	// Dropar o banco de dados teste
+	_, err = conn.Exec("drop database if exists jwtdb_test")
 	if err != nil {
 		log.Fatalf("Failed to drop test database:%v", err)
 	}
