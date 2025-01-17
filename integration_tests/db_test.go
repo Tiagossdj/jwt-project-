@@ -8,6 +8,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // func para conectar-se ao banco de dados principal para criar o banco de teste
@@ -72,7 +73,22 @@ func CleanUpTestDataBase(db *sqlx.DB) {
 
 // func para criar exemplos no banco de dados para testes
 func PopulateTestData(db *sqlx.DB) {
-	_, err := db.Exec(`insert into usuario (nome, email, password) values ('Existing user', 'ExistingEmail@example.com', 'HashedPassword')`)
+	_, err := db.Exec(`insert into usuario (nome, email, password) values ('Test user', 'test@example.com', 'HashedPassword')`)
+
+	if err != nil {
+		log.Fatalf("Failed to Populate Database:%v", err)
+	}
+}
+
+func CreateUserTest(db *sqlx.DB) {
+
+	// Gerar uma senha hash para o usuario
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatalf("Failed to hash password:%v", err)
+	}
+
+	_, err = db.Exec(`insert into usuario (nome, email, password) values ('Test user', 'TestUser@example.com', '$1')`, hashedPassword)
 
 	if err != nil {
 		log.Fatalf("Failed to Populate Database:%v", err)
