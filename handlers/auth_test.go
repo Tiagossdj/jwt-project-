@@ -12,7 +12,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -215,7 +215,7 @@ func TestGetProfile_Success(t *testing.T) {
 	// Executando o handler!
 	if assert.NoError(t, GetProfile(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Contains(t, rec.Body.String(), "Token validado com sucesso! Bem vindo test user")
+		assert.Contains(t, rec.Body.String(), "Token validated successfully! Welcome test user!")
 	}
 }
 

@@ -10,14 +10,23 @@ import (
 	"github.com/Tiagossdj/jwt-project-/model"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // chave secreta para assinar o token jwt
 var JwtSecret = []byte("yoursecretkey!")
 
-// Login é o handler para o endPoint /auth/login
+// Login a user
+// @Summary Login an existing user
+// @Description Login an existing user using email and password
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.Message "Hi (your name), here's your token: (your token)!"
+// @Failure 400 {object} model.Message "Invalid data!"
+// @Failure 401 {object} model.Message "invalid credentials!"
+// @Router /auth/login [post]
 func Login(c echo.Context, db *sqlx.DB) error {
 	var req model.LoginRequest
 	if err := c.Bind(&req); err != nil {
@@ -74,7 +83,16 @@ func Login(c echo.Context, db *sqlx.DB) error {
 
 }
 
-// Register é o handler para o endPoint /auth/register
+// Register a new user
+// @Summary Register a new user
+// @Description Register a new user in the system
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} model.Message "User successfully registered"
+// @Failure 400 {object} model.Message "Invalid Data"
+// @Failure 409 {object} model.Message "Email already registered"
+// @Router /auth/register [post]
 func Register(c echo.Context, db *sqlx.DB) error {
 	var req model.RegisterRequest
 	if err := c.Bind(&req); err != nil {
@@ -129,7 +147,15 @@ func Register(c echo.Context, db *sqlx.DB) error {
 
 }
 
-// Profile é o handler para o endPoint /protected/profile, para utiliza-lo, é necessario um token!
+// Get user profile
+// @Summary Get user profile data
+// @Description Retrieves user profile data based on JWT token
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.Message "Token validated successfully! Welcome (your name)!"
+// @Failure 401 {object} model.Message "Invalid Token claims"
+// @Router /auth/profile [get]
 func GetProfile(c echo.Context) error {
 	user := c.Get("user") // Obtendo o usuário do contexto
 	if user == nil {
@@ -153,7 +179,7 @@ func GetProfile(c echo.Context) error {
 
 	// Retornar a resposta com o email extraído do token
 	return c.JSON(http.StatusOK, model.Message{
-		Message: fmt.Sprintf("Token validado com sucesso! Bem vindo %s!", name),
+		Message: fmt.Sprintf("Token validated successfully! Welcome %s!", name),
 	})
 
 }

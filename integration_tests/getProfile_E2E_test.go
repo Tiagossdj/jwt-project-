@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/Tiagossdj/jwt-project-/handlers"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func TestGetProfile_E2Etest(t *testing.T) {

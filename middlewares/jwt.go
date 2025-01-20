@@ -8,7 +8,7 @@ import (
 	"github.com/Tiagossdj/jwt-project-/handlers"
 	"github.com/Tiagossdj/jwt-project-/model"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func JwtMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

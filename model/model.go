@@ -6,20 +6,20 @@ import (
 
 // estrutura para Mensagens
 type Message struct {
-	Message string
+	Message string `json:"Message"`
 }
 
 // estrutura para o Login
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" example:"dot@example.com"`
+	Password string `json:"password" example:"dotExample123"`
 }
 
 // estrutura para o registro
 type RegisterRequest struct {
-	Name     string `json:"nome"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     string `json:"nome" example:"mike "`
+	Email    string `json:"email" example:"mike@example.com"`
+	Password string `json:"password" example:"mikeExample123"`
 }
 
 // Estrutura para o Banco de Dados
