@@ -1,0 +1,82 @@
+basePath: /
+definitions:
+  model.Message:
+    properties:
+      Message:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact: {}
+  description: This API handles user authentication using JWT with Echo framework.
+  title: JWT authentication API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login an existing user using email and password
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Hi (your name), here''s your token: (your token)!'
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Invalid data!
+          schema:
+            $ref: '#/definitions/model.Message'
+        "401":
+          description: invalid credentials!
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Login an existing user
+      tags:
+      - users
+  /auth/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves user profile data based on JWT token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token validated successfully! Welcome (your name)!
+          schema:
+            $ref: '#/definitions/model.Message'
+        "401":
+          description: Invalid Token claims
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get user profile data
+      tags:
+      - users
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user in the system
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Invalid Data
+          schema:
+            $ref: '#/definitions/model.Message'
+        "409":
+          description: Email already registered
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Register a new user
+      tags:
+      - users
+schemes:
+- http
+swagger: "2.0"
