@@ -1,12 +1,15 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/Tiagossdj/jwt-project-/model"
-	"github.com/labstack/echo"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -78,12 +81,34 @@ func TestJwtMiddleware_InvalidToken(t *testing.T) {
 	}
 }
 
+// Função para gerar token válidos para teste!
+
+func GenerateValidToken() string {
+	//claims do token
+	claims := jwt.MapClaims{
+		"name": "Test User",                            // O nome que você quiser!
+		"exp":  time.Now().Add(time.Minute * 1).Unix(), //tempo de expiração do token.
+	}
+
+	// Criando o token com a chave secreta
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// A chave secreta que você usaria para assinar o token (o mesmo valor usado na aplicação)!
+	secretKey := []byte("yoursecretkey!")
+
+	//gerando o token
+	tokenString, err := token.SignedString(secretKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tokenString
+}
+
 // Teste de Middleware com Token Válido!
 
 func TestJwtMiddleware_ValidToken(t *testing.T) {
 
 	// Gerar um token válido (você precisa de uma chave secreta para isso)
-	token := "token valido aqui!" // Simule um token válido
+	token := GenerateValidToken() // Simule um token válido
 
 	e := echo.New()
 
