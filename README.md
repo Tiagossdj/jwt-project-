@@ -55,7 +55,7 @@ Para rodar a aplicação, siga os passos abaixo:
  Primeiro, clone o repositório para sua máquina local:
    
  ```
-  git clone [https://github.com/Tiagossdj/jwt-project-.git] 
+  git clone https://github.com/Tiagossdj/jwt-project-.git
  ```
 
 Em seguida, entre no diretório do projeto:
@@ -93,6 +93,98 @@ Em seguida, entre no diretório do projeto:
   ```
    http server started on [::]:8888
 ```
+## Documentação da API   
+
+A documentação da API está disponível através do Swagger, que pode ser acessada em:
+
+- **URL da documentação:**
+
+```
+http://localhost:8888/swagger/index.html
+```
+
+### Como Usar
+
+- **Inicie a aplicação**
+para que a documentação do Swagger esteja acessível:  
+
+```
+go run main.go
+```
+
+## Utilizando o Postman Para API
+
+Você pode baixar o postman ou utiliza-lo online para acessar as funcionalidades da api neste link:
+
+- [postman.com](https://www.postman.com)
+
+#### **POST auth/register**
+
+- **Descrição:** Registra um novo usuário.
+  
+- **Corpo da Requisição:**
+- No Postman, selecione o método POST e insira a URL da rota:
+ ```
+ http://localhost:8888/auth/register
+ ```
+    
+- Vá até a aba "Body" e selecione a opção "raw" e escolha o formato JSON.
+- Cole o seguinte corpo da requisição:
+    
+```
+    {
+      "nome": "Nome do Usuário",
+      "email": "email@example.com",
+      "password": "senha_secreta"
+    }
+```
+- Clique em **Send** para verificar a resposta.
+  
+
+#### **POST auth/login**
+
+- **Descrição:** Realiza o login e retorna um token JWT.
+  
+- **Corpo da Requisição:**
+- Selecione o método POST e insira a URL da rota:
+    
+ ```
+ http://localhost:8888/auth/login
+ ```
+    
+- Vá até a aba "Body" e selecione a opção "raw" e escolha o formato JSON.
+- Cole o seguinte corpo da requisição:
+    
+```
+    {
+      "email": "email@example.com",
+      "password": "senha_secreta"
+    }
+```
+- Clique em **Send** para verificar a resposta.
+
+#### **GET protected/profile**
+
+- **Descrição:** Obtém o perfil do usuário com o token JWT.
+  
+- **Autorização:**
+- No Postman, após realizar o login, você irá obter um token JWT.
+- Em seguida, crie uma nova requisição do tipo GET e insira a URL da rota
+    
+ ```
+ http://localhost:8888/protected/profile
+ ```
+    
+- Vá até a aba "Headers" e adicione a chave Authorization com o valor Bearer <seu-token-jwt-aqui>, ou direto na aba "Authorization" e selecionar `Bearer Token` e adicione o valor.
+  
+- Clique em **Send** para verificar a resposta.
+
+### 3. **Confirmando se a API está funcionando**
+
+Ao executar as requisições no Postman, você verá as respostas retornadas pela API, que devem corresponder ao esperado para cada operação. 
+
+Caso tudo esteja configurado corretamente, você verá as respostas com os respectivos status `(200 OK, 401 Unauthorized, etc.).`
+
 
 ## Como rodar os testes
 
