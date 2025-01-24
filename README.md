@@ -72,8 +72,15 @@ Em seguida, entre no diretório do projeto:
   ```
   go mod tidy
   ```
+3. **Construir o binário da aplicação (opcional)**
 
-3. **Subir o banco de dados (se estiver usando Docker)**
+Se você preferir construir um binário em vez de rodar o código diretamente com o go run, você pode usar o comando abaixo para compilar o código:
+
+```
+make build
+```
+
+4. **Subir o banco de dados (se estiver usando Docker)**
 
   Se você estiver usando Docker para o PostgreSQL, rode o seguinte comando para subir o container do banco:
    ```
@@ -81,7 +88,7 @@ Em seguida, entre no diretório do projeto:
    ```
   Isso iniciará o banco de dados em segundo plano.
 
-4. **Rodar a aplicação**
+5. **Rodar a aplicação**
 
   Para rodar a aplicação, use o seguinte comando:
    ```
