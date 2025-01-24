@@ -1,3 +1,5 @@
+//go:build e2e
+
 package integration_tests
 
 import (
@@ -13,7 +15,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func TestGetProfile_E2Etest(t *testing.T) {
+func TestGetProfile_E2E(t *testing.T) {
 	// Banco de dados Teste
 	db := SetupTestDataBase(t)
 	defer CleanUpTestDataBase(db)
@@ -22,6 +24,7 @@ func TestGetProfile_E2Etest(t *testing.T) {
 	e := echo.New()
 
 	// Teste 1: Registro e Login com token válido!
+
 	t.Run("GetProfile with valid token", func(t *testing.T) {
 		// Registro de Usuário
 
