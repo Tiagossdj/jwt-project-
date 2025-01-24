@@ -55,8 +55,15 @@ Para rodar a aplicação, siga os passos abaixo:
  Primeiro, clone o repositório para sua máquina local:
    
  ```
-  git clone [https://github.com/Tiagossdj/jwt-project-.git] cd jwt-project-
+  git clone [https://github.com/Tiagossdj/jwt-project-.git] 
  ```
+
+Em seguida, entre no diretório do projeto:
+ ```
+  cd jwt-project- 
+ ```
+
+
   
 2. **Instalar as dependências**
 
